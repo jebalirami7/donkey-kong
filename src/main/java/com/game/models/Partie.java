@@ -116,7 +116,7 @@ public class Partie {
         gameAudio = new Music("/main/resources/media/gameSound.wav");
     }
 
-    public void createPartie(GraphicsContext gc, Scene scene) {
+    public void run(GraphicsContext gc, Scene scene) {
 
         map.draw(activeLevel);
         bridge_objs = map.getBridges();

@@ -1,6 +1,5 @@
 package main.java.com.game.models;
 
-
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
@@ -15,10 +14,8 @@ public class Game {
         partie = new Partie(root, player, menuScene);
     }
 
-    public void run (GraphicsContext gc) {
-        partie.createPartie(gc, gameScene);
+    public void run(GraphicsContext gc) {
+        partie.run(gc, gameScene);
     }
-    
-    
-}
 
+}
