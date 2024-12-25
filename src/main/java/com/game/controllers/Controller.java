@@ -25,37 +25,39 @@ import javafx.stage.Stage;
 import main.java.com.game.App;
 import main.java.com.game.models.Game;
 import main.java.com.game.models.Player;
-import main.java.com.game.models.SaveData;
+import main.java.com.game.models.DataSaver;
 import main.java.com.game.models.exceptions.EmptyNameException;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
+public class Controller implements Initializable {
 
-public class Controller  implements Initializable   {
+    @FXML
+    private VBox container;
+    @FXML
+    private Label newGameLabel;
+    @FXML
+    private Label continueLabel;
+    @FXML
+    private Label scoreBoardLabel;
+    @FXML
+    private Label exitLabel;
 
-    @FXML private VBox container ;
-    @FXML private Label newGameLabel;
-    @FXML private Label continueLabel;
-    @FXML private Label scoreBoardLabel;
-    @FXML private Label exitLabel;
-    
     private Label[] menuItems;
 
     private int selectedIndex;
-
 
     private TableView<Player> tableView, scoreBoard;
 
     private Popup popup;
 
-    private boolean showPlayers,showError ;
+    private boolean showPlayers, showError;
 
-    public Controller()  {
-        showError = false ;
+    public Controller() {
+        showError = false;
     }
-
 
     @Override
     @FXML
@@ -64,18 +66,17 @@ public class Controller  implements Initializable   {
         tableView = new TableView<>();
         createTableView();
         createScoreBoard();
-        
-        menuItems = new Label[]{newGameLabel, continueLabel, scoreBoardLabel, exitLabel};
+
+        menuItems = new Label[] { newGameLabel, continueLabel, scoreBoardLabel, exitLabel };
         selectedIndex = 0;
         updateSelection();
         for (Label menuItem : menuItems) {
             menuItem.setFocusTraversable(true);
         }
-        menuItems[selectedIndex].requestFocus(); 
+        menuItems[selectedIndex].requestFocus();
 
         showPlayers = false;
     }
-
 
     @FXML
     private void handleKeyPressed(KeyEvent event) {
@@ -89,20 +90,19 @@ public class Controller  implements Initializable   {
         }
     }
 
-
     private void moveUP() {
-        selectedIndex = (selectedIndex -1) ;
-        if (selectedIndex < 0) selectedIndex = menuItems.length -1 ;
+        selectedIndex = (selectedIndex - 1);
+        if (selectedIndex < 0)
+            selectedIndex = menuItems.length - 1;
         updateSelection();
     }
-
 
     private void moveDOWN() {
-        selectedIndex = selectedIndex +1 ;
-        if (selectedIndex >= menuItems.length) selectedIndex = 0;
+        selectedIndex = selectedIndex + 1;
+        if (selectedIndex >= menuItems.length)
+            selectedIndex = 0;
         updateSelection();
     }
-
 
     private void updateSelection() {
         for (int i = 0; i < menuItems.length; i++) {
@@ -114,7 +114,6 @@ public class Controller  implements Initializable   {
         }
     }
 
-    
     @FXML
     private void handleMenuItemAction(int selectedIndex) {
         switch (selectedIndex) {
@@ -135,13 +134,12 @@ public class Controller  implements Initializable   {
 
     }
 
-
     public void newGame(Player player) {
         Group root = new Group();
         Canvas canvas = new Canvas(App.width, App.height);
         root.getChildren().add(canvas);
-        GraphicsContext  gc = canvas.getGraphicsContext2D();
-        Scene gameScene = new Scene(root); 
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        Scene gameScene = new Scene(root);
 
         Stage stage = (Stage) container.getScene().getWindow();
         stage.setScene(gameScene);
@@ -150,7 +148,7 @@ public class Controller  implements Initializable   {
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         double centerX = screenBounds.getMinX() + (screenBounds.getWidth() - App.width) / 2;
         double centerY = (screenBounds.getHeight() - App.height) / 2;
-        
+
         stage.setX(centerX);
         stage.setY(centerY);
         stage.setScene(gameScene);
@@ -160,15 +158,14 @@ public class Controller  implements Initializable   {
         game.run(gc);
     }
 
-
     public void addPlayer() {
-        
+
         Popup popup = new Popup();
 
         TextField textField = new TextField();
         Label title = new Label("Enter Player Name");
         Label error = new Label("Invalid Name");
-        title.setFont(Font.font("Arial",18));
+        title.setFont(Font.font("Arial", 18));
         title.setStyle("-fx-text-fill: WHITE; -fx-text-alignement: CENTER;");
 
         error.setFont(Font.font("Arial", 16));
@@ -183,16 +180,17 @@ public class Controller  implements Initializable   {
                     if (e.getCode() == KeyCode.ENTER) {
                         popup.hide();
                         showPlayers = false;
-                        if (textField.getText().equals("")) throw new EmptyNameException();
+                        if (textField.getText().equals(""))
+                            throw new EmptyNameException();
                         Player player = new Player(textField.getText(), 0);
-                        SaveData.write(player);
+                        DataSaver.getInstance().write(player);
                         tableView.getItems().add(player);
                         newGame(player);
                     }
                 } catch (EmptyNameException e1) {
                     System.out.println("empty name");
-                    showError = true ; 
-                    showPlayers = false; 
+                    showError = true;
+                    showPlayers = false;
                 }
 
             }
@@ -200,9 +198,9 @@ public class Controller  implements Initializable   {
 
         textField.requestFocus();
 
-        VBox popupLayout = new VBox(10); 
+        VBox popupLayout = new VBox(10);
         popupLayout.setAlignment(Pos.CENTER);
-        popupLayout.getChildren().addAll(title,textField,error);
+        popupLayout.getChildren().addAll(title, textField, error);
 
         popupLayout.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -219,23 +217,22 @@ public class Controller  implements Initializable   {
         popup.getContent().add(popupLayout);
 
         popupLayout.setMinSize(200, 50);
-        popupLayout.setMaxSize(400, 148);   
-        popupLayout.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 10; -fx-padding: 20;");         
-        popup.setAutoHide(true); 
-        
+        popupLayout.setMaxSize(400, 148);
+        popupLayout.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 10; -fx-padding: 20;");
+        popup.setAutoHide(true);
+
         Stage stage = (Stage) container.getScene().getWindow();
         double ownerX = stage.getX();
         double ownerY = stage.getY();
         double ownerWidth = stage.getWidth();
         double ownerHeight = stage.getHeight();
-        
+
         popup.show(stage, ownerX + ownerWidth / 2, ownerY + ownerHeight / 2);
 
     }
 
-    
     public void selectPlayer() {
-        VBox popupLayout = new VBox(10); 
+        VBox popupLayout = new VBox(10);
         popupLayout.setAlignment(Pos.CENTER);
         popupLayout.getChildren().addAll(tableView);
 
@@ -256,41 +253,42 @@ public class Controller  implements Initializable   {
         popup.getContent().add(popupLayout);
 
         popupLayout.setMinSize(300, 50);
-        popupLayout.setMaxSize(1000, 200); 
-        popupLayout.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 10;");         
-        popup.setAutoHide(true); 
+        popupLayout.setMaxSize(1000, 200);
+        popupLayout.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 10;");
+        popup.setAutoHide(true);
 
         Stage stage = (Stage) container.getScene().getWindow();
         double ownerX = stage.getX();
         double ownerY = stage.getY();
         double ownerWidth = stage.getWidth();
         double ownerHeight = stage.getHeight();
-        
+
         popup.show(stage, ownerX + ownerWidth / 2, ownerY + ownerHeight / 2);
 
     }
 
-
     private void createTableView() {
 
         tableView = new TableView<Player>();
-        
+
         TableColumn<Player, String> nameColumn = new TableColumn<>("NAME");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         TableColumn<Player, Integer> scoreColumn = new TableColumn<>("SCORE");
         scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
 
-        nameColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgb(128, 128, 128, 0.6); -fx-font-family: Roboto; -fx-font-size: 20;");
-        scoreColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgb(128, 128, 128, 0.6); -fx-font-family: Arial; -fx-font-size: 20;");
+        nameColumn.setStyle(
+                "-fx-alignment: CENTER; -fx-background-color: rgb(128, 128, 128, 0.6); -fx-font-family: Roboto; -fx-font-size: 20;");
+        scoreColumn.setStyle(
+                "-fx-alignment: CENTER; -fx-background-color: rgb(128, 128, 128, 0.6); -fx-font-family: Arial; -fx-font-size: 20;");
 
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 
         tableView.getColumns().addAll(nameColumn, scoreColumn);
 
-        Player[] playersArray = SaveData.read().entrySet().stream()
-        .map(entry -> new Player(entry.getKey(), entry.getValue()))
-        .toArray(Player[]::new);
+        Player[] playersArray = DataSaver.getInstance().read().entrySet().stream()
+                .map(entry -> new Player(entry.getKey(), entry.getValue()))
+                .toArray(Player[]::new);
 
         tableView.getItems().addAll(playersArray);
 
@@ -310,11 +308,10 @@ public class Controller  implements Initializable   {
         });
     }
 
-
     private void viewScoreBoard() {
-        VBox popupLayout = new VBox(10); 
+        VBox popupLayout = new VBox(10);
         popupLayout.setAlignment(Pos.CENTER);
-        
+
         popupLayout.getChildren().addAll(scoreBoard);
 
         popupLayout.requestFocus();
@@ -334,43 +331,45 @@ public class Controller  implements Initializable   {
         popup.getContent().add(popupLayout);
 
         popupLayout.setMinSize(300, 50);
-        popupLayout.setMaxSize(1000, 200);   
-        popupLayout.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 10;");         
-        popup.setAutoHide(true); 
-        
+        popupLayout.setMaxSize(1000, 200);
+        popupLayout.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 10;");
+        popup.setAutoHide(true);
+
         Stage stage = (Stage) container.getScene().getWindow();
         double ownerX = stage.getX();
         double ownerY = stage.getY();
         double ownerWidth = stage.getWidth();
         double ownerHeight = stage.getHeight();
-        
+
         popup.show(stage, ownerX + ownerWidth / 2, ownerY + ownerHeight / 2);
 
     }
-    
 
     private void createScoreBoard() {
         scoreBoard = new TableView<Player>();
-        
+
         TableColumn<Player, String> nameColumn = new TableColumn<>("NAME");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         TableColumn<Player, Integer> scoreColumn = new TableColumn<>("SCORE");
         scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
 
-        nameColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgb(128, 128, 128, 0.6); -fx-font-family: Roboto; -fx-font-size: 20;");
-        scoreColumn.setStyle("-fx-alignment: CENTER; -fx-background-color: rgb(128, 128, 128, 0.6); -fx-font-family: Arial; -fx-font-size: 20;");
+        nameColumn.setStyle(
+                "-fx-alignment: CENTER; -fx-background-color: rgb(128, 128, 128, 0.6); -fx-font-family: Roboto; -fx-font-size: 20;");
+        scoreColumn.setStyle(
+                "-fx-alignment: CENTER; -fx-background-color: rgb(128, 128, 128, 0.6); -fx-font-family: Arial; -fx-font-size: 20;");
 
         scoreBoard.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 
         scoreBoard.getColumns().addAll(nameColumn, scoreColumn);
 
-        Player[] playersArray = SaveData.read().entrySet().stream()
-        .map(entry -> new Player(entry.getKey(), entry.getValue())).sorted(Comparator
-        .comparingInt((e) -> e.getScore())).sorted(Comparator.reverseOrder())
-        .toArray(Player[]::new);   
+        Player[] playersArray = DataSaver.getInstance().read().entrySet().stream()
+                .map(entry -> new Player(entry.getKey(), entry.getValue())).sorted(Comparator
+                        .comparingInt((e) -> e.getScore()))
+                .sorted(Comparator.reverseOrder())
+                .toArray(Player[]::new);
 
         scoreBoard.getItems().addAll(playersArray);
-        
+
     }
 }

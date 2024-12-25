@@ -28,12 +28,12 @@ import main.java.com.game.App;
 
 public class Partie {
 
-    private Map map ;
+    private Map map;
 
     private Group root;
 
     // Initialize bridges rows
-    private int start_y = (int)App.height - 2 * App.section_height;
+    private int start_y = (int) App.height - 2 * App.section_height;
     private int row2_y = start_y - 4 * App.section_height;
     private int row3_y = row2_y - 7 * App.slope - 3 * App.section_height;
     private int row4_y = row3_y - 4 * App.section_height;
@@ -61,14 +61,14 @@ public class Partie {
     private boolean gameOver = false;
     private boolean victory = false;
     private boolean paused = false;
-    
+
     private Timeline gameTimeLine;
 
     List<Level> levels;
 
-    private final int barrelSpawnTime = 360;   //3600, 1000
+    private final int barrelSpawnTime = 360; // 3600, 1000
     private int barrelCount = barrelSpawnTime / 2;
-    private int barrelTime = 180;   //2000, 500
+    private int barrelTime = 180; // 2000, 500
     private ArrayList<Bridge> bridge_objs;
     private ArrayList<Ladder> ladder_objs;
     private ArrayList<Hammer> hammer_objs;
@@ -87,7 +87,8 @@ public class Partie {
     private int selectedIndex = 0;
     private Text[] menuItems;
 
-    Pair<Integer, Integer> playerPosition = new Pair<>(7 * App.section_width, (int) App.height - 6 * App.section_height);
+    Pair<Integer, Integer> playerPosition = new Pair<>(7 * App.section_width,
+            (int) App.height - 6 * App.section_height);
 
     Music winAudio;
     Music loseAudio;
@@ -99,7 +100,7 @@ public class Partie {
     Font font = Font.font("Arial", App.section_width * 50 / 35);
     Font font1 = Font.font("Arial", App.section_width * 80 / 35);
     Font font2 = Font.font("Arial", App.section_width * 28 / 35);
-    
+
     public Partie(Group root, Player p, Scene menuScene) {
         this.menuScene = menuScene;
         this.root = root;
@@ -115,9 +116,8 @@ public class Partie {
         gameAudio = new Music("/main/resources/media/gameSound.wav");
     }
 
-
     public void createPartie(GraphicsContext gc, Scene scene) {
-    
+
         map.draw(activeLevel);
         bridge_objs = map.getBridges();
         ladder_objs = map.getLadders();
@@ -141,11 +141,11 @@ public class Partie {
                 }
                 if (victory) {
                     gameAudio.stop();
-                    winAudio.play();   
+                    winAudio.play();
                     new Timeline(new KeyFrame(Duration.seconds(2), e -> {
                         winAudio.stop();
                         return;
-                    })).play();                 
+                    })).play();
                 }
                 if (reset) {
                     new Timeline(new KeyFrame(Duration.seconds(1), e -> {
@@ -158,20 +158,19 @@ public class Partie {
         }));
         gameTimeLine.setCycleCount(Timeline.INDEFINITE); // Repeat indefinitely
         gameTimeLine.play();
-        
+
     }
 
-    
     private void restartGame() {
         score = 0;
         attempts = 3;
         bonus = 6000;
-        
-        for(Barrel barrel : barrels) {
+
+        for (Barrel barrel : barrels) {
             barrel.clear(root);
         }
         barrels.clear();
-        for(FireBall fireBall : fireBalls) {
+        for (FireBall fireBall : fireBalls) {
             fireBall.clear(root);
         }
         fireBalls.clear();
@@ -189,16 +188,15 @@ public class Partie {
         gameOver = false;
     }
 
-
     private void nextLevel() {
         attempts++;
         bonus += 6000;
-        
-        for(Barrel barrel : barrels) {
+
+        for (Barrel barrel : barrels) {
             barrel.clear(root);
         }
         barrels.clear();
-        for(FireBall fireBall : fireBalls) {
+        for (FireBall fireBall : fireBalls) {
             fireBall.clear(root);
         }
         fireBalls.clear();
@@ -221,12 +219,11 @@ public class Partie {
         gameOver = false;
     }
 
-
     private void renderGame(GraphicsContext gc, Scene scene) {
         // Draw Background
         gc.setFill(javafx.scene.paint.Color.BLACK);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-        
+
         loseAudio.stop();
         gameAudio.play();
 
@@ -242,7 +239,7 @@ public class Partie {
         } else {
             barrelCount = new Random().nextInt(180);
             barrelTime = barrelSpawnTime - barrelCount;
-            Barrel barrel = new Barrel(App.width * 270 / 1120, row6_top - (double)App.section_height * 50 / 29, root);
+            Barrel barrel = new Barrel(App.width * 270 / 1120, row6_top - (double) App.section_height * 50 / 29, root);
             barrels.add(barrel);
             if (activeLevel >= 1) {
                 FireBall fireBall = new FireBall(5 * App.section_width, App.height - 4 * App.section_height, root);
@@ -254,9 +251,10 @@ public class Partie {
         while (barrelIterator.hasNext()) {
             Barrel barrel = barrelIterator.next();
 
-            // barrel.checkFall(ladder_objs, root);   // feha mochkla sghira
-            fireBallTrigger = barrel.update(bridge_objs, row1_top, row2_top, row3_top, row4_top, row5_top, map.getOilDrum());
-            
+            // barrel.checkFall(ladder_objs, root); // feha mochkla sghira
+            fireBallTrigger = barrel.update(bridge_objs, row1_top, row2_top, row3_top, row4_top, row5_top,
+                    map.getOilDrum());
+
             if (fireBallTrigger) {
                 barrelIterator.remove();
                 barrel.clear(root);
@@ -298,52 +296,52 @@ public class Partie {
         climbingStatus = mario.checkClimb(ladder_objs);
 
         // check if the player is out of the window
-        if (mario.getRect().getLayoutX() + mario.getRect().getWidth() < 0 || mario.getRect().getLayoutX() > App.width || mario.getRect().getLayoutY() < 0 || mario.getRect().getLayoutY() > App.height) {
+        if (mario.getRect().getLayoutX() + mario.getRect().getWidth() < 0 || mario.getRect().getLayoutX() > App.width
+                || mario.getRect().getLayoutY() < 0 || mario.getRect().getLayoutY() > App.height) {
             resetGame();
             return;
         }
-        
+
         if (counter < 60)
-        counter ++;
+            counter++;
         else {
             counter = 0;
             if (bonus > 0)
-            bonus -= 100;
+                bonus -= 100;
             else {
                 resetGame();
                 return;
             }
         }
-        
-        keyboardManager(scene, climbingStatus.getKey(), climbingStatus.getValue());
-    
-    }
 
+        keyboardManager(scene, climbingStatus.getKey(), climbingStatus.getValue());
+
+    }
 
     private void resetGame() {
         if (victory) {
             highScore = Math.max(highScore, score + bonus);
             System.out.println("New High Score: " + highScore + " by " + p.getName());
-            if (p.getScore() < highScore){
+            if (p.getScore() < highScore) {
                 p.setScore(highScore);
-                SaveData.update(p.getName(), p.getScore());
+                DataSaver.getInstance().update(p.getName(), p.getScore());
             }
             drawText();
             root.getChildren().add(menu("You Win"));
             return;
         }
 
-        if (attempts > 1 && !reset) { 
+        if (attempts > 1 && !reset) {
             loseAudio.play();
             reset = true;
             return;
         }
 
-        for(Barrel barrel : barrels) {
+        for (Barrel barrel : barrels) {
             barrel.clear(root);
         }
         barrels.clear();
-        for(FireBall fireBall : fireBalls) {
+        for (FireBall fireBall : fireBalls) {
             fireBall.clear(root);
         }
         fireBalls.clear();
@@ -354,9 +352,9 @@ public class Partie {
 
         bonus = 6000;
         score = 0;
-        
+
         if (attempts > 1) {
-            attempts --;           
+            attempts--;
             map.drawHammers(activeLevel);
             mario.reset(playerPosition.getKey(), playerPosition.getValue());
             fireBallTrigger = false;
@@ -365,12 +363,11 @@ public class Partie {
             victory = false;
         } else if (attempts == 1) {
             gameOver = true;
-            attempts --;           
+            attempts--;
             drawText();
             root.getChildren().add(menu("Game Over"));
         }
     }
-
 
     public void keyboardManager(Scene scene, boolean climb, boolean down) {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -378,12 +375,12 @@ public class Partie {
             public void handle(KeyEvent e) {
                 KeyCode key = e.getCode();
 
-                if ((key == KeyCode.RIGHT || key == KeyCode.D) && !mario.isClimbing() ) {
+                if ((key == KeyCode.RIGHT || key == KeyCode.D) && !mario.isClimbing()) {
                     // System.out.println("moving right");
                     mario.setX_change(1);
                     mario.setDir(1);
                 }
-                if ((key == KeyCode.LEFT || key == KeyCode.Q) && !mario.isClimbing() ) {
+                if ((key == KeyCode.LEFT || key == KeyCode.Q) && !mario.isClimbing()) {
                     // System.out.println("moving left");
                     mario.setX_change(-1);
                     mario.setDir(-1);
@@ -440,11 +437,10 @@ public class Partie {
                     if (mario.isClimbing() && mario.isLanded()) {
                         mario.setClimbing(false);
                     }
-                }             
+                }
             }
         });
     }
-
 
     private void handleKeyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.UP) {
@@ -455,18 +451,23 @@ public class Partie {
             handleMenuItemAction(selectedIndex);
         }
     }
+
     private void moveUP() {
         selectedIndex--;
-        if (selectedIndex < 0) selectedIndex = menuItems.length -1 ;
+        if (selectedIndex < 0)
+            selectedIndex = menuItems.length - 1;
         updateSelection();
-        
+
     }
+
     private void moveDOWN() {
         selectedIndex++;
-        if (selectedIndex >= menuItems.length) selectedIndex = 0;
+        if (selectedIndex >= menuItems.length)
+            selectedIndex = 0;
         updateSelection();
-        
+
     }
+
     private void updateSelection() {
         for (int i = 0; i < menuItems.length; i++) {
             if (i == selectedIndex) {
@@ -478,6 +479,7 @@ public class Partie {
             }
         }
     }
+
     private void handleMenuItemAction(int selectedIndex) {
         if (selectedIndex == 1 && menuItems.length == 3 || selectedIndex == 2 && menuItems.length == 4) {
             gameTimeLine.playFromStart();
@@ -503,7 +505,6 @@ public class Partie {
         }
     }
 
-
     private void backToMenu() {
         Stage stage = (Stage) root.getScene().getWindow();
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
@@ -515,16 +516,17 @@ public class Partie {
         stage.show();
     }
 
-
     public VBox menu(String s) {
         VBox vbox = new VBox();
         vbox.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 10; -fx-padding: 30;");
         vbox.setAlignment(Pos.CENTER);
-        vbox.setOnKeyPressed(e -> {handleKeyPressed(e);});
-        
+        vbox.setOnKeyPressed(e -> {
+            handleKeyPressed(e);
+        });
+
         Text text = new Text();
         text.setText(s);
-        text.setFont(font1); 
+        text.setFont(font1);
         text.setFill(Color.WHITE);
         vbox.getChildren().add(text);
 
@@ -540,13 +542,13 @@ public class Partie {
         exitLabel.setFont(font);
 
         if (s == "Game Paused") {
-            menuItems = new Text[]{resumeLabel, mainMenuLabel, replayLabel, exitLabel};
+            menuItems = new Text[] { resumeLabel, mainMenuLabel, replayLabel, exitLabel };
             vbox.getChildren().add(resumeLabel);
         } else if (s == "You Win") {
-            menuItems = new Text[]{nextLevelLabel, mainMenuLabel, replayLabel, exitLabel};
+            menuItems = new Text[] { nextLevelLabel, mainMenuLabel, replayLabel, exitLabel };
             vbox.getChildren().add(nextLevelLabel);
         } else {
-            menuItems = new Text[]{mainMenuLabel, replayLabel, exitLabel};
+            menuItems = new Text[] { mainMenuLabel, replayLabel, exitLabel };
         }
 
         selectedIndex = 0;
@@ -554,39 +556,40 @@ public class Partie {
         for (Text menuItem : menuItems) {
             menuItem.setFocusTraversable(true);
         }
-        menuItems[selectedIndex].requestFocus(); 
+        menuItems[selectedIndex].requestFocus();
 
         vbox.setAlignment(Pos.CENTER);
 
         vbox.setLayoutX((App.width - text.getLayoutBounds().getWidth()) / 2 - 30);
-        vbox.setLayoutY((App.height - (text.getLayoutBounds().getHeight() + nextLevelLabel.getLayoutBounds().getHeight() + mainMenuLabel.getLayoutBounds().getHeight() + resumeLabel.getLayoutBounds().getHeight() + replayLabel.getLayoutBounds().getHeight() + exitLabel.getLayoutBounds().getHeight())) / 2 - 30);
-                
+        vbox.setLayoutY((App.height - (text.getLayoutBounds().getHeight() + nextLevelLabel.getLayoutBounds().getHeight()
+                + mainMenuLabel.getLayoutBounds().getHeight() + resumeLabel.getLayoutBounds().getHeight()
+                + replayLabel.getLayoutBounds().getHeight() + exitLabel.getLayoutBounds().getHeight())) / 2 - 30);
+
         vbox.getChildren().addAll(mainMenuLabel, replayLabel, exitLabel);
         return vbox;
     }
 
-
     public void drawText() {
         scoreText.setText("I•" + score);
-        scoreText.setFont(font); 
+        scoreText.setFont(font);
         scoreText.setFill(Color.WHITE);
         scoreText.setX(3 * App.section_width);
         scoreText.setY(3 * App.section_height);
 
         highScoreText.setText("TOP•" + highScore);
-        highScoreText.setFont(font); 
+        highScoreText.setFont(font);
         highScoreText.setFill(Color.WHITE);
         highScoreText.setX(14 * App.section_width);
         highScoreText.setY(3 * App.section_height);
 
         symbolText.setText("[  ][        ][  ]");
-        symbolText.setFont(font); 
+        symbolText.setFont(font);
         symbolText.setFill(Color.WHITE);
         symbolText.setX(20 * App.section_width);
         symbolText.setY(5 * App.section_height);
 
         columnsText.setText("  ♥      BONUS       L ");
-        columnsText.setFont(font2); 
+        columnsText.setFont(font2);
         columnsText.setFill(Color.WHITE);
         columnsText.setX(20 * App.section_width + 5);
         columnsText.setY(4 * App.section_height);
@@ -595,13 +598,13 @@ public class Partie {
             infoText.setText("  " + attempts + "       " + bonus + "        " + (activeLevel + 1));
         else if (bonus >= 1000)
             infoText.setText("  " + attempts + "        " + bonus + "         " + (activeLevel + 1));
-        else 
+        else
             infoText.setText("  " + attempts + "          " + bonus + "         " + (activeLevel + 1));
-        infoText.setFont(font2); 
+        infoText.setFont(font2);
         infoText.setFill(Color.WHITE);
         infoText.setX(20 * App.section_width + 5);
         infoText.setY(5.5 * App.section_height);
 
     }
-    
+
 }
